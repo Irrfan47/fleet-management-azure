@@ -18,7 +18,7 @@ function createCrud<T extends { id: string }>(seed: T[]) {
     create: async (payload: Omit<T, "id" | "createdAt" | "updatedAt">) => {
       await delay();
       const now = new Date().toISOString();
-      const item = { ...(payload as object), id: uid(), createdAt: now, updatedAt: now } as T;
+      const item = { ...(payload as object), id: uid(), createdAt: now, updatedAt: now } as unknown as T;
       data = [item, ...data];
       return item;
     },
