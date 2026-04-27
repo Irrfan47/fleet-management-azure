@@ -40,7 +40,7 @@ export default function Drivers() {
   ];
 
   const handleSubmit = async (v: DriverFormValues) => {
-    if (editing) await update(editing.id, v); else await create(v);
+    if (editing) await update(editing.id, v as Partial<Driver>); else await create(v as Omit<Driver, "id" | "createdAt" | "updatedAt">);
     setFormOpen(false); setEditing(null);
   };
 

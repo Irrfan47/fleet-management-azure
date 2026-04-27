@@ -40,7 +40,7 @@ export default function Vehicles() {
   ];
 
   const handleSubmit = async (v: VehicleFormValues) => {
-    if (editing) await update(editing.id, v); else await create(v);
+    if (editing) await update(editing.id, v as Partial<Vehicle>); else await create(v as Omit<Vehicle, "id" | "createdAt" | "updatedAt">);
     setFormOpen(false); setEditing(null);
   };
 

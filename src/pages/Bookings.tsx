@@ -104,8 +104,8 @@ export default function Bookings() {
         <BookingForm
           initial={editing} vehicles={vehicles} drivers={drivers} bookings={items}
           onSubmit={async (v) => {
-            if (editing) await update(editing.id, { ...v, status: editing.status });
-            else await create({ ...v, status: "pending" });
+            if (editing) await update(editing.id, { ...v, status: editing.status } as Partial<Booking>);
+            else await create({ ...v, status: "pending" } as Omit<Booking, "id" | "createdAt" | "updatedAt">);
             setFormOpen(false); setEditing(null);
           }}
           onCancel={() => setFormOpen(false)}
