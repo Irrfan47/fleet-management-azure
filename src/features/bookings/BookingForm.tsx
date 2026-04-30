@@ -32,39 +32,94 @@ export function BookingForm({ initial, vehicles, drivers, bookings, onSubmit, on
     resolver: zodResolver(schema),
     defaultValues: {
       vehicleId: "", driverId: "", purpose: "", destination: "",
-      startDate: new Date().toISOString().slice(0, 10),
-      endDate: new Date().toISOString().slice(0, 10),
+      startDate: new Date().toISOString().slice(0, 16),
+      endDate: new Date().toISOString().slice(0, 16),
     },
   });
 
   useEffect(() => {
     if (initial) reset({
-      vehicleId: initial.vehicleId, driverId: initial.driverId,
+      vehicleId: initial.vehicleId.toString(), 
+      driverId: initial.driverId.toString(),
       purpose: initial.purpose, destination: initial.destination,
-      startDate: initial.startDate.slice(0, 10), endDate: initial.endDate.slice(0, 10),
+      startDate: initial.startDate.slice(0, 16).replace(" ", "T"), 
+      endDate: initial.endDate.slice(0, 16).replace(" ", "T"),
     });
   }, [initial, reset]);
 
   const v = watch();
   const { validate } = useBookingValidation();
 
-  const availableVehicles = useMemo(() => vehicles.filter((x) => x.status !== "disposed"), [vehicles]);
+  // Aligning with Flowchart 2.1: Only show available vehicles & active drivers
+  // But include the currently selected ones if editing
+  const filteredVehicles = useMemo(() => {
+    return vehicles.filter((x) => 
+      x.status === "available" || x.id.toString() === initial?.vehicleId?.toString()
+    );
+  }, [vehicles, initial]);
+
+  const filteredDrivers = useMemo(() => {
+    return drivers.filter((x) => 
+      x.status === "active" || x.id.toString() === initial?.driverId?.toString()
+    );
+  }, [drivers, initial]);
 
   const submit = async (values: BookingFormValues) => {
-    const vehicle = vehicles.find((x) => x.id === values.vehicleId);
-    const driver = drivers.find((x) => x.id === values.driverId);
-    const result = validate({ vehicle, driver, startDate: values.startDate, endDate: values.endDate, existingBookings: bookings, excludeBookingId: initial?.id });
-    if (!result.valid) { toast.error("Booking blocked", { description: result.reason }); return; }
+    const vehicle = vehicles.find((x) => x.id.toString() === values.vehicleId.toString());
+    const driver = drivers.find((x) => x.id.toString() === values.driverId.toString());
+    
+    // Client-side flowchart checks
+    if (!initial && driver?.status !== 'active') {
+      toast.error("Driver not active", { description: "Cannot create booking for an inactive driver." });
+      return;
+    }
+    if (!initial && vehicle?.status !== 'available') {
+      toast.error("Vehicle not available", { description: `Vehicle is currently ${vehicle?.status}` });
+      return;
+    }
+
+    const result = validate({ 
+      vehicle, 
+      driver, 
+      startDate: values.startDate, 
+      endDate: values.endDate, 
+      existingBookings: bookings, 
+      excludeBookingId: initial?.id 
+    });
+
+    if (!result.valid) { 
+      toast.error("Booking blocked", { description: result.reason }); 
+      return; 
+    }
+
     await onSubmit({ ...values, vehicleRegNo: vehicle!.regNo, driverName: driver!.name });
   };
 
   return (
     <form onSubmit={handleSubmit(submit)} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <SelectDropdown label="Vehicle" value={v.vehicleId} onChange={(x) => setValue("vehicleId", x)} options={availableVehicles.map((x) => ({ value: x.id, label: `${x.regNo} · ${x.brand} ${x.model} (${x.status})` }))} error={errors.vehicleId?.message} />
-        <SelectDropdown label="Driver" value={v.driverId} onChange={(x) => setValue("driverId", x)} options={drivers.map((x) => ({ value: x.id, label: `${x.name} (${x.status})` }))} error={errors.driverId?.message} />
-        <FormInput label="Start date" type="date" {...register("startDate")} error={errors.startDate?.message} />
-        <FormInput label="End date" type="date" {...register("endDate")} error={errors.endDate?.message} />
+        <SelectDropdown 
+          label="Vehicle" 
+          value={v.vehicleId?.toString()} 
+          onChange={(x) => setValue("vehicleId", x)} 
+          options={filteredVehicles.map((x) => ({ 
+            value: x.id.toString(), 
+            label: `${x.regNo} · ${x.brand} ${x.model} (${x.status})` 
+          }))} 
+          error={errors.vehicleId?.message} 
+        />
+        <SelectDropdown 
+          label="Driver" 
+          value={v.driverId?.toString()} 
+          onChange={(x) => setValue("driverId", x)} 
+          options={filteredDrivers.map((x) => ({ 
+            value: x.id.toString(), 
+            label: `${x.name} (${x.status})` 
+          }))} 
+          error={errors.driverId?.message} 
+        />
+        <FormInput label="Start Date / Time" type="datetime-local" {...register("startDate")} error={errors.startDate?.message} />
+        <FormInput label="End Date / Time" type="datetime-local" {...register("endDate")} error={errors.endDate?.message} />
         <FormInput label="Purpose" {...register("purpose")} error={errors.purpose?.message} />
         <FormInput label="Destination" {...register("destination")} error={errors.destination?.message} />
       </div>

@@ -23,7 +23,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { email: "admin@fleet.com", password: "demo123" },
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -43,8 +43,8 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center gradient-subtle p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl gradient-primary text-primary-foreground shadow-elegant-lg">
-            <Car className="h-7 w-7" />
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl overflow-hidden bg-white p-2 shadow-elegant-lg">
+            <img src="/logo.png" alt="Logo" className="h-full w-full object-contain" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{APP_NAME}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{APP_TAGLINE}</p>
@@ -56,8 +56,8 @@ export default function Login() {
             <p className="mb-6 text-sm text-muted-foreground">Enter your credentials to access the dashboard</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <FormInput label="Email" type="email" placeholder="you@company.com" {...register("email")} error={errors.email?.message} />
-              <FormInput label="Password" type="password" placeholder="••••••••" {...register("password")} error={errors.password?.message} />
+              <FormInput label="Email" type="email" placeholder="name@email.com" {...register("email")} error={errors.email?.message} />
+              <FormInput label="Password" type="password" placeholder="password" {...register("password")} error={errors.password?.message} />
 
               <div className="flex justify-end">
                 <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline">Forgot password?</Link>
@@ -68,9 +68,6 @@ export default function Login() {
               </Button>
             </form>
 
-            <p className="mt-6 text-center text-xs text-muted-foreground">
-              Demo: any email · Tip: include "admin" in email for admin role
-            </p>
           </CardContent>
         </Card>
       </div>

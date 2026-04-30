@@ -1,4 +1,4 @@
-export const APP_NAME = "FleetIQ";
+export const APP_NAME = "Fleet Management System";
 export const APP_TAGLINE = "Enterprise Vehicle Management";
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
@@ -14,6 +14,10 @@ export const PAGINATION = {
 export const ALERT_THRESHOLDS = {
   EXPIRY_STANDARD_DAYS: 30,
   EXPIRY_URGENT_DAYS: 7,
+  SERVICE_STANDARD_DAYS: 30,
+  SERVICE_URGENT_DAYS: 7,
+  SERVICE_KM_THRESHOLD: 1000,
+  SERVICE_KM_URGENT: 500,
 };
 
 export const VEHICLE_STATUS = {
@@ -31,7 +35,8 @@ export const DRIVER_STATUS = {
 export const BOOKING_STATUS = {
   pending: { label: "Pending", tone: "warning" },
   approved: { label: "Approved", tone: "info" },
-  checked_in: { label: "Checked In", tone: "info" },
+  "in-use": { label: "In Use", tone: "info" },
+  checked_in: { label: "In Use", tone: "info" },
   completed: { label: "Completed", tone: "success" },
   rejected: { label: "Rejected", tone: "destructive" },
   cancelled: { label: "Cancelled", tone: "muted" },
@@ -65,6 +70,6 @@ export const DISPOSAL_STATUS = {
   rejected: { label: "Rejected", tone: "destructive" },
 } as const;
 
-export const DEPARTMENTS = ["Operations", "Finance", "HR", "IT", "EXCO", "Logistics", "Engineering"];
-export const VEHICLE_TYPES = ["Sedan", "SUV", "Van", "Truck", "Pickup", "Bus"];
+export const DEPARTMENTS = ["Management", "Operations", "Finance", "HR", "IT", "IT Support", "EXCO", "Logistics", "Engineering"];
+export const VEHICLE_TYPES = ["Car", "Sedan", "SUV", "Van", "Truck", "Pickup", "Bus"];
 export const VEHICLE_BRANDS = ["Toyota", "Honda", "Proton", "Perodua", "Mercedes", "BMW", "Isuzu", "Mitsubishi"];

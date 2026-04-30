@@ -1,0 +1,80 @@
+1. MAKLUMAT TERAS (MASTER DATA)
+
+1.1 Maklumat Kenderaan
+● No. pendaftaran
+● Jenis kenderaan (kereta, lori, van, motosikal, jentera)
+● Jenama / Model
+● Tempoh Penggunaan
+● No. enjin & casis
+● Kapasiti enjin / muatan
+● Tarikh pembelian
+● Status (Aktif / Rosak / Dilupuskan)
+● Lokasi / cawangan
+● Jabatan pemilik
+● Gambar kenderaan
+● Polisi insurans & tarikh lupus
+● Kelas (Kenderaan Jabatan / Kenderaan EXCO)
+
+1.2 Maklumat Pemandu
+● Nama Pemandu
+● Jabatan / Penempatan
+● Status Pemandu (aktif / digantung)
+● Rekod saman / kemalangan
+● Sejarah pemanduan
+● Gambar pemandu
+
+2. MODUL UTAMA SISTEM
+
+2.1 Modul Tempahan / Penggunaan Kenderaan
+
+Fungsi :
+● Permohonan tempahan kenderaan
+● Jadual penggunaan
+● Check-in / Check-out kenderaan
+● Catatan tujuan perjalanan
+● Odometer mula & akhir
+● Log perjalanan
+● Surat
+
+Maklumat penting :
+● Tarikh & masa
+● Pemandu
+● Destinasi
+● Tujuan rasmi
+
+2.2 Modul Penyelenggaraan & Servis
+
+Fungsi :
+● Jadual servis berkala (ikut km /tarikh)
+● Rekod pembaikan
+● Status kenderaan (boleh guna /tidak)
+● Notifikasi servis akan datang
+Maklumat penting :
+● Jenis servis
+● Tarikh servis
+● Odometer
+● Kos
+● Resit / dokumen sokongan
+
+2.3 Modul Insurans, Cukai Jalan &
+Pematuhan
+Fungsi :
+● Jejak tarikh tamat
+● Notifikasi automatik
+● Rekod pembaharuan
+● Dokumen polisi
+
+2.4 Modul Kemalangan & Saman
+Fungsi :
+● Laporan Kemalangan
+● Upload gambar & laporan polis
+● Status tuntutan insurans
+● Rekod saman
+● Tindakan susulan
+
+2.5 Modul Pelupusan Kenderaan
+Fungsi :
+● Penilaian kenderaan lama
+● Kelulusan pelupusan
+● Rekod jualan / hapus kira
+● Audit trail

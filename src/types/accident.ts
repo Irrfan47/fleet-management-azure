@@ -13,9 +13,16 @@ export interface Accident extends AuditFields {
   location: string;
   description: string;
   claimStatus: ClaimStatus;
-  claimProgress: number; // 0-100
-  policeReportUrl?: string;
+  claimProgress: number;
+  report_path?: string;
+  images?: string[];
   estimatedCost: number;
+  vehicle?: {
+    regNo: string;
+  };
+  driver?: {
+    name: string;
+  };
 }
 
 export interface Fine extends AuditFields {

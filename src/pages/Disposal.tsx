@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Plus, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ActionTable, BaseModal, ConfirmModal, PageHeader, StatusBadge, type Column } from "@/components/common";
+import { ActionTable, BaseModal, ConfirmModal, PageHeader, StatusBadge, EmptyState, type Column } from "@/components/common";
 import { DisposalForm } from "@/features/disposal/DisposalForm";
 import { useDisposals, useVehicles } from "@/hooks/resourceHooks";
 import { DISPOSAL_STATUS } from "@/utils/constants";
 import { fmtDate, fmtCurrency } from "@/utils/format";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Disposal } from "@/types";
 import { toast } from "sonner";
 
@@ -18,6 +19,7 @@ export default function DisposalPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Disposal | null>(null);
   const [approveTarget, setApproveTarget] = useState<Disposal | null>(null);
+  const { t } = useLanguage();
 
   const handleApprove = async () => {
     if (!approveTarget) return;
@@ -46,11 +48,21 @@ export default function DisposalPage() {
     ) },
   ];
 
+  const renderEmpty = (
+    <EmptyState
+      icon={Trash2}
+      title={t("no_disposals_found")}
+      description={t("no_disposals_desc")}
+      actionLabel={t("new_disposal")}
+      onAction={() => { setEditing(null); setFormOpen(true); }}
+    />
+  );
+
   return (
     <div className="space-y-6">
       <PageHeader title="Disposal" description="Vehicle evaluation, approval workflow and audit trail"
         action={<Button onClick={() => { setEditing(null); setFormOpen(true); }}><Plus className="mr-1 h-4 w-4" /> New disposal</Button>} />
-      <ActionTable columns={columns} data={items} loading={loading} />
+      <ActionTable columns={columns} data={items} loading={loading} renderEmpty={renderEmpty} />
 
       <BaseModal open={formOpen} onOpenChange={setFormOpen} title={editing ? "Edit disposal" : "New disposal"} size="lg">
         <DisposalForm initial={editing} vehicles={vehicles}

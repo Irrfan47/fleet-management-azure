@@ -1,4 +1,4 @@
-import { Bell, Moon, Sun, Search, LogOut, Menu } from "lucide-react";
+import { Bell, Moon, Sun, Search, LogOut, Menu, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useAppDispatch, useAppSelector, markAllRead, markNotificationRead, toggleSidebar } from "@/redux/store";
 import { fmtRelative } from "@/utils/format";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
 export function Topbar() {
   const { theme, toggle } = useTheme();
   const { user, logout } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const notifications = useAppSelector((s) => s.ui.notifications);
   const dispatch = useAppDispatch();
@@ -31,7 +33,7 @@ export function Topbar() {
         </Button>
         <div className="relative hidden md:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search vehicles, drivers, bookings…" className="w-72 pl-9" />
+          <Input placeholder={t("search") + "..."} className="w-72 pl-9" />
         </div>
       </div>
 
@@ -39,6 +41,22 @@ export function Topbar() {
         <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle theme">
           {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Languages className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setLanguage("en")} className={cn(language === "en" && "bg-primary-muted")}>
+              English
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setLanguage("ms")} className={cn(language === "ms" && "bg-primary-muted")}>
+              Bahasa Melayu
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <Popover>
           <PopoverTrigger asChild>

@@ -2,6 +2,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { PAGINATION } from "@/utils/constants";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 export interface Column<T> {
   key: string;
   header: string;
-  render?: (row: T) => ReactNode;
+  render?: (row: T, colIndex?: number, rowIndex?: number) => ReactNode;
   className?: string;
   sortable?: boolean;
   accessor?: (row: T) => string | number;
@@ -24,6 +25,7 @@ interface ActionTableProps<T extends { id: string }> {
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
   pageSize?: number;
+  renderEmpty?: ReactNode; // New prop for custom empty state
 }
 
 export function ActionTable<T extends { id: string }>({
@@ -35,6 +37,7 @@ export function ActionTable<T extends { id: string }>({
   onRowClick,
   emptyMessage = "No records found.",
   pageSize = PAGINATION.DEFAULT_PER_PAGE,
+  renderEmpty,
 }: ActionTableProps<T>) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -63,7 +66,7 @@ export function ActionTable<T extends { id: string }>({
         </div>
       )}
 
-      <div className="rounded-lg border bg-card shadow-sm">
+      <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40">
@@ -74,23 +77,38 @@ export function ActionTable<T extends { id: string }>({
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground">Loading...</TableCell></TableRow>
-            ) : paginated.length === 0 ? (
-              <TableRow><TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground">{emptyMessage}</TableCell></TableRow>
-            ) : (
-              paginated.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => onRowClick?.(row)}
-                  className={cn(onRowClick && "cursor-pointer hover:bg-muted/40")}
-                >
+              Array.from({ length: pageSize }).map((_, i) => (
+                <TableRow key={i}>
                   {columns.map((c) => (
                     <TableCell key={c.key} className={c.className}>
-                      {c.render ? c.render(row) : String((row as Record<string, unknown>)[c.key] ?? "—")}
+                      <Skeleton className="h-4 w-full" />
                     </TableCell>
                   ))}
                 </TableRow>
               ))
+            ) : paginated.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-64 text-center">
+                  {renderEmpty || <span className="text-muted-foreground">{emptyMessage}</span>}
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginated.map((row, paginatedIndex) => {
+                const absoluteIndex = (safePage - 1) * pageSize + paginatedIndex;
+                return (
+                  <TableRow
+                    key={row.id}
+                    onClick={() => onRowClick?.(row)}
+                    className={cn(onRowClick && "cursor-pointer hover:bg-muted/40")}
+                  >
+                    {columns.map((c, colIdx) => (
+                      <TableCell key={c.key} className={c.className}>
+                        {c.render ? c.render(row, colIdx, absoluteIndex) : String((row as Record<string, unknown>)[c.key] ?? "—")}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

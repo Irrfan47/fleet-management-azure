@@ -16,7 +16,17 @@ export interface Vehicle extends AuditFields {
   department: string;
   insuranceExpiry: string;
   roadTaxExpiry: string;
+  insurance_policy_no?: string;
+  insurance_provider?: string;
+  insurance_doc_path?: string;
+  road_tax_ref?: string;
+  road_tax_doc_path?: string;
   class: VehicleClass;
   odometer: number;
-  imageUrl?: string;
+  chassisNo: string;
+  image_path?: string;
+  capacity?: string;
+  load?: string;
+  next_service_date?: string;
+  next_service_odometer?: number;
 }

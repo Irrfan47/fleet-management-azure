@@ -13,13 +13,14 @@ interface SelectDropdownProps {
   error?: string;
   className?: string;
   name?: string;
+  disabled?: boolean;
 }
 
-export function SelectDropdown({ label, value, onChange, options, placeholder = "Select...", error, className, name }: SelectDropdownProps) {
+export function SelectDropdown({ label, value, onChange, options, placeholder = "Select...", error, className, name, disabled }: SelectDropdownProps) {
   return (
     <div className="space-y-1.5">
       {label && <Label htmlFor={name} className="text-sm font-medium">{label}</Label>}
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value} onValueChange={onChange} disabled={disabled}>
         <SelectTrigger id={name} className={cn(error && "border-destructive", className)}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

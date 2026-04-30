@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { AUTH_TOKEN_KEY } from "@/utils/constants";
+import api from "@/services/api";
 import type { User } from "@/types";
 
 interface AuthCtx {
@@ -19,24 +20,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
-    else localStorage.removeItem(USER_KEY);
+    else {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
   }, [user]);
 
-  const login = async (email: string, _password: string) => {
-    await new Promise((r) => setTimeout(r, 500));
-    const mockUser: User = {
-      id: "u1",
-      name: email.split("@")[0].replace(/^\w/, (c) => c.toUpperCase()),
-      email,
-      role: email.includes("admin") ? "admin" : "user",
-    };
-    localStorage.setItem(AUTH_TOKEN_KEY, "mock-token-" + Date.now());
-    setUser(mockUser);
+  const login = async (email: string, password: string) => {
+    const { data } = await api.post("/login", { email, password });
+    
+    // Store token in localStorage (api.ts interceptor will pick it up)
+    localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
+    setUser(data.user);
   };
 
-  const logout = () => {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    setUser(null);
+  const logout = async () => {
+    try {
+      await api.post("/logout");
+    } catch (e) {
+      console.error("Logout failed", e);
+    } finally {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      setUser(null);
+    }
   };
 
   return <Ctx.Provider value={{ user, isAuthenticated: !!user, login, logout }}>{children}</Ctx.Provider>;

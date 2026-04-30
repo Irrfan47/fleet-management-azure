@@ -1,25 +1,28 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Car, Users, CalendarCheck, Wrench, ShieldCheck, AlertTriangle, Trash2, User, ChevronLeft } from "lucide-react";
+import { LayoutDashboard, Car, Users, CalendarCheck, Wrench, ShieldCheck, AlertTriangle, Trash2, User, ChevronLeft, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector, toggleSidebar } from "@/redux/store";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { APP_NAME } from "@/utils/constants";
 
 const navItems = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/vehicles", label: "Vehicles", icon: Car },
-  { to: "/drivers", label: "Drivers", icon: Users },
-  { to: "/bookings", label: "Bookings", icon: CalendarCheck },
-  { to: "/maintenance", label: "Maintenance", icon: Wrench },
-  { to: "/insurance", label: "Insurance & Tax", icon: ShieldCheck },
-  { to: "/accidents", label: "Accidents & Fines", icon: AlertTriangle },
-  { to: "/disposal", label: "Disposal", icon: Trash2 },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", key: "dashboard", icon: LayoutDashboard, end: true },
+  { to: "/vehicles", key: "vehicles", icon: Car },
+  { to: "/drivers", key: "drivers", icon: Users },
+  { to: "/bookings", key: "bookings", icon: CalendarCheck },
+  { to: "/maintenance", key: "maintenance", icon: Wrench },
+  { to: "/insurance", key: "insurance", icon: ShieldCheck },
+  { to: "/accidents", key: "accidents", icon: AlertTriangle },
+  { to: "/disposal", key: "disposals", icon: Trash2 },
+  { to: "/reports", key: "reports", icon: FileText },
+  { to: "/profile", key: "profile", icon: User },
 ];
 
 export function Sidebar() {
   const collapsed = useAppSelector((s) => s.ui.sidebarCollapsed);
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const { t } = useLanguage();
 
   return (
     <aside
@@ -31,15 +34,15 @@ export function Sidebar() {
       <div className={cn("flex h-16 items-center border-b border-sidebar-border", collapsed ? "justify-center px-2" : "justify-between px-4")}>
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md gradient-primary text-primary-foreground">
-              <Car className="h-4 w-4" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-md overflow-hidden bg-white p-1 shadow-sm">
+              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain" />
             </div>
-            <span className="text-lg font-bold tracking-tight">{APP_NAME}</span>
+            <span className="text-lg font-bold tracking-tight text-white leading-tight">{APP_NAME}</span>
           </div>
         )}
         {collapsed && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-md gradient-primary text-primary-foreground">
-            <Car className="h-4 w-4" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-md overflow-hidden bg-white p-1 shadow-sm">
+            <img src="/logo.png" alt="Logo" className="h-full w-full object-contain" />
           </div>
         )}
       </div>
@@ -60,10 +63,10 @@ export function Sidebar() {
                   : "text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
                 collapsed && "justify-center px-2",
               )}
-              title={collapsed ? item.label : undefined}
+              title={collapsed ? t(item.key) : undefined}
             >
               <Icon className={cn("h-4 w-4 shrink-0", active && "text-primary")} />
-              {!collapsed && <span className="truncate">{item.label}</span>}
+              {!collapsed && <span className="truncate">{t(item.key)}</span>}
             </NavLink>
           );
         })}

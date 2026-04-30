@@ -12,9 +12,13 @@ export interface Maintenance extends AuditFields {
   completedDate?: string;
   odometerAt: number;
   nextServiceOdometer?: number;
+  nextServiceDate?: string;
   cost?: number;
   vendor: string;
   status: MaintenanceStatus;
   notes?: string;
-  receiptUrl?: string;
+  receipt_path?: string;
+  vehicle?: {
+    regNo: string;
+  };
 }

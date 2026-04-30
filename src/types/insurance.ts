@@ -12,5 +12,8 @@ export interface InsurancePolicy extends AuditFields {
   startDate: string;
   expiryDate: string;
   premium: number;
-  documentUrl?: string;
+  document_path?: string;
+  vehicle?: {
+    regNo: string;
+  };
 }
