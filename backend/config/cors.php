@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://red-ocean-00f95d100.7.azurestaticapps.net', 'http://localhost:5173'],
+    'allowed_origins' => [
+        'https://red-ocean-00f95d100.7.azurestaticapps.net',
+        'https://fleet.xz3tt.dev',
+        'http://localhost:5173'
+    ],
 
     'allowed_origins_patterns' => [],
 
